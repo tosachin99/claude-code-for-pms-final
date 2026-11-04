@@ -67,3 +67,15 @@ Use the rook-database connector. Call describe_table on pings, then run_query. E
 ### 3.
 
 Pick one responder from the pings table who went quiet. Show me every week since June: how many pings, and what they did with each. Use their name.
+
+### 4.
+
+Open the folder 00-rook/code/dispatch-routing/. This is the part of our software that decides who gets asked to take a job. I have never read code before and I am not going to start now. Walk me through what happens from the moment something goes wrong somewhere to the moment a responder's phone buzzes, in plain English, no jargon. Then tell me which file each step lives in.
+
+### 5.
+
+The pings table on rook-database has last session's numbers. Read that alongside this code. Does it back up what I found in Lab A? And does that answer Marcus's question above?
+
+### 6.
+
+Somebody has been quiet for a month. Walk me through, step by step, exactly what would have to happen for them to start getting work again.
