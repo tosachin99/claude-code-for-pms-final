@@ -25,7 +25,7 @@ teaching scenario.
 ## Working context
 
 The user is the new PM for Rook Dispatch, started Mon 24 Aug 2026, no overlap with Priya (left 21 Aug).
-Sources: Rook wiki, Priya's handoff, Rook database (29 Jun–6 Sep 2026), and part of the routing code (`routing.py`, `config.py`, `history.py`). **Interviews not yet read.** "My read" marks inference.
+Sources: Rook wiki, Priya's handoff, Rook database (29 Jun–6 Sep 2026), and part of the routing code (`routing.py`, `config.py`, `history.py`). Interviews and other repo files read in the wrap-up notes below. "My read" marks inference.
 
 ### Products
 Rook sells subscription software, priced per active responder, to independent masked responders and their handlers. Monthly release train (4.x).
@@ -78,3 +78,11 @@ Proximity weight 0.45→0.60, acceptance 0.40→0.25, ping wait 90s→60s. Also 
 - **Overdue:** settle with Helen what is still a Q3 commitment. Priya says "a couple" of items slipped; only Availability Confidence visibly did.
 - **Stale briefs:** Bulk Callout (shipped 4.1) and Routing Override Audit Log (shipped 4.0) still read as unstarted.
 - **Unknown:** who owns Supply items now; the directory covers Dispatch only.
+
+### Added at Module 1 wrap-up (cross-source checks)
+- **Framing vs data:** "responders stopped answering" is wrong for the worst-hit four; they stopped being asked. 74% of callouts end at the first ping, so low rank means never pinged, despite the routing README saying ranking "only sets the order."
+- **Doc vs code:** the glossary lists availability as a routing input, but the code uses it only as a filter. 82 callouts ended with no taker after one ping, which the code doesn't explain. All 41 "quiet phone" and "gone before I could answer" tickets are still open.
+- **Briefs vs reality:** the requisition brief adds an approval step, but handlers complain approvals are too slow, and the priority field does nothing (3 tickets). Owner differs across brief, roadmap and review. The Bulk Callout and audit-log briefs are stale, and the shipped bulk button was hard to find.
+- **Smaller:** filters reset silently (4 tickets plus Mr. Ambrose), which Priya calls noise; two suits were booked for servicing on marathon day; Helen's "ship this afternoon" conflicts with routing shipping in releases.
+- **Gaps:** wiki and database stop in early Sept (4 Nov today; the repo has a 13 Oct run; no 4.3 or Q4 roadmap). `06-sidekicks/briefs/` is missing. Security Policy 4.1 isn't in the wiki. The interviews hold details about responders' households; keep those out of notes.
+- **Open:** a draft list of questions for Wen, Ravi, Nadia, Marcus, Helen and Sofia was written in chat and not saved.
