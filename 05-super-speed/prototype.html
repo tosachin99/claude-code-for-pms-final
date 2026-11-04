@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rook Dispatch: comeback path prototype</title>
+<style>
+  :root {
+    --bg:#f3f4f7; --card:#ffffff; --ink:#1b2430; --mute:#586374; --line:#d9dee6;
+    --accent:#2457d6; --amber:#8a4b00; --amberbg:#fff3dc; --amberline:#f0c36d;
+    --green:#0b6b40; --greenbg:#e3f5ec; --greenline:#8fd1b0;
+    --blue:#1a45b8; --bluebg:#e7eeff; --red:#a4261b; --redbg:#fdebe9; --redline:#f0a8a1;
+    --grey:#eef0f4;
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; color:var(--ink); background:var(--bg); }
+  button, select, input { font:inherit; }
+  button { cursor:pointer; }
+  button:focus-visible, input:focus-visible, select:focus-visible { outline:3px solid #7aa2ff; outline-offset:2px; }
+
+  .topbar { background:#17202e; color:#fff; padding:12px 24px; display:flex; align-items:center; gap:24px; flex-wrap:wrap; }
+  .brand { font-weight:700; letter-spacing:.2px; }
+  .brand small { font-weight:400; opacity:.75; margin-left:8px; }
+  .tabs { display:flex; gap:4px; margin-left:auto; align-items:center; }
+  .tabs span { opacity:.75; margin-right:8px; font-size:13px; }
+  .tab { background:transparent; color:#fff; border:1px solid #44516a; padding:6px 12px; border-radius:6px; }
+  .tab[aria-pressed="true"] { background:#fff; color:#17202e; border-color:#fff; font-weight:600; }
+
+  .ribbon { background:#fff8e1; border-bottom:1px solid #ecd9a0; padding:8px 24px; font-size:13px; color:#5c4a00; }
+
+  .controls { background:#fff; border-bottom:1px solid var(--line); padding:14px 24px; display:grid; gap:12px 28px; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); align-items:end; }
+  .controls h2 { grid-column:1/-1; margin:0; font-size:12px; text-transform:uppercase; letter-spacing:.8px; color:var(--mute); }
+  .field label, .field legend { display:block; font-size:13px; color:var(--mute); margin-bottom:4px; padding:0; }
+  fieldset.field { border:0; margin:0; padding:0; }
+  .seg { display:flex; border:1px solid var(--line); border-radius:8px; overflow:hidden; }
+  .seg label { flex:1; margin:0; padding:8px 10px; text-align:center; cursor:pointer; color:var(--ink); font-size:14px; background:#fff; }
+  .seg input { position:absolute; opacity:0; }
+  .seg input:checked + span { font-weight:600; }
+  .seg label:has(input:checked) { background:var(--accent); color:#fff; }
+  .seg label:has(input:focus-visible) { outline:3px solid #7aa2ff; outline-offset:-3px; }
+  select, input[type=range] { width:100%; }
+  select { padding:7px 8px; border:1px solid var(--line); border-radius:8px; background:#fff; }
+  .row { display:flex; gap:8px; }
+  .btn { border:1px solid var(--line); background:#fff; padding:9px 14px; border-radius:8px; }
+  .btn.primary { background:var(--accent); border-color:var(--accent); color:#fff; font-weight:600; }
+  .btn:disabled { opacity:.5; cursor:not-allowed; }
+  .hint { font-size:12px; color:var(--mute); margin-top:4px; }
+
+  .layout { display:grid; grid-template-columns:minmax(0,1.6fr) minmax(0,1fr) 330px; gap:20px; padding:20px 24px 40px; align-items:start; }
+  @media (max-width:1180px) { .layout { grid-template-columns:minmax(0,1fr) 330px; } .feedcol { grid-column:1/-1; order:3; } }
+  @media (max-width:760px) { .layout { grid-template-columns:1fr; } .phonecol { order:2; } }
+  h2.section { font-size:14px; text-transform:uppercase; letter-spacing:.7px; color:var(--mute); margin:0 0 10px; }
+
+  .card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px; margin-bottom:14px; }
+  .card header { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+  .card h3 { margin:0; font-size:19px; }
+  .chip { font-size:12px; background:var(--grey); border-radius:999px; padding:2px 9px; color:var(--mute); }
+  .pill { font-size:12px; font-weight:600; border-radius:999px; padding:3px 10px; margin-left:auto; }
+  .pill.quiet { background:var(--amberbg); color:var(--amber); border:1px solid var(--amberline); }
+  .pill.busy { background:var(--bluebg); color:var(--blue); border:1px solid #b4c6f5; }
+  .pill.back { background:var(--greenbg); color:var(--green); border:1px solid var(--greenline); }
+  .pill.asking { background:var(--bluebg); color:var(--blue); border:1px solid #b4c6f5; }
+  .pill.missed { background:var(--redbg); color:var(--red); border:1px solid var(--redline); }
+  .stats { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:14px 0 4px; }
+  .stat { background:var(--grey); border-radius:8px; padding:9px 10px; }
+  .stat b { display:block; font-size:21px; line-height:1.2; }
+  .stat span { font-size:12px; color:var(--mute); }
+
+  .banner { margin-top:12px; border-radius:10px; padding:12px 14px; border:1px solid; }
+  .banner.amber { background:var(--amberbg); border-color:var(--amberline); color:#4d2f00; }
+  .banner.green { background:var(--greenbg); border-color:var(--greenline); color:#08502f; }
+  .banner.red { background:var(--redbg); border-color:var(--redline); color:#7a1b13; }
+  .banner.plain { background:var(--grey); border-color:var(--line); color:var(--mute); }
+  .banner.blue { background:var(--bluebg); border-color:#b4c6f5; color:#143482; }
+  .banner strong { display:block; margin-bottom:2px; }
+  .linkbtn { background:none; border:0; color:var(--accent); padding:4px 0 0; text-decoration:underline; font-size:13px; }
+  .explain { margin-top:8px; font-size:13px; background:#fff; border:1px dashed var(--amberline); border-radius:8px; padding:9px 11px; color:#4d2f00; }
+
+  .feed { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:14px 16px; }
+  .feed ol { list-style:none; margin:0; padding:0; max-height:430px; overflow:auto; }
+  .feed li { border-top:1px solid var(--line); padding:9px 0; font-size:14px; }
+  .feed li:first-child { border-top:0; }
+  .feed time { color:var(--mute); font-size:12px; display:block; }
+  .feed .empty { color:var(--mute); font-style:italic; }
+
+  .phone { background:#10151e; border-radius:34px; padding:14px; width:310px; margin:0 auto; box-shadow:0 10px 30px rgba(10,20,40,.25); }
+  .screen { background:#fff; border-radius:22px; min-height:430px; padding:18px 16px; display:flex; flex-direction:column; }
+  .screen .who { font-size:12px; color:var(--mute); text-transform:uppercase; letter-spacing:.6px; }
+  .screen h3 { margin:2px 0 10px; font-size:18px; }
+  .idle { margin:auto 0; text-align:center; color:var(--mute); padding:20px 6px; }
+  .offer-title { font-weight:700; font-size:17px; margin:8px 0 4px; }
+  .offer-body { color:var(--mute); font-size:14px; margin-bottom:14px; }
+  .bar { height:12px; border-radius:6px; background:var(--grey); overflow:hidden; }
+  .bar > i { display:block; height:100%; width:100%; background:var(--accent); transition:width .1s linear, background .2s; }
+  .bar.late > i { background:#d97706; }
+  .secs { display:flex; justify-content:space-between; font-size:13px; color:var(--mute); margin:6px 0 16px; }
+  .answerbtns { display:grid; gap:10px; margin-top:auto; }
+  .answerbtns .take { background:var(--green); border-color:var(--green); color:#fff; padding:14px; font-weight:700; font-size:17px; border-radius:12px; }
+  .answerbtns .down { background:#fff; border:1px solid var(--line); padding:12px; border-radius:12px; }
+  .result { margin:auto 0; text-align:center; padding:10px 4px; }
+  .result .big { font-size:34px; }
+  .result p { color:var(--mute); margin:6px 0 0; }
+  .note { font-size:12px; color:var(--mute); text-align:center; margin-top:10px; }
+  footer { padding:0 24px 30px; color:var(--mute); font-size:13px; max-width:980px; }
+  .sr { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">Rook Dispatch <small>Coverage console · prototype</small></div>
+  <div class="tabs" role="group" aria-label="View as handler">
+    <span>View as</span>
+    <button class="tab" data-view="linda" aria-pressed="true">Linda Pruitt</button>
+    <button class="tab" data-view="kip" aria-pressed="false">Kip</button>
+  </div>
+</div>
+<div class="ribbon">Prototype with made-up screen states, so nothing here is live. Starting numbers are rounded from the September pings table. Quiet-stretch length and wait length are still open questions in the brief.</div>
+
+<section class="controls" aria-label="Prototype controls">
+  <h2>Prototype controls (not part of the real screen)</h2>
+  <fieldset class="field">
+    <legend>How routing works</legend>
+    <div class="seg">
+      <label><input type="radio" name="mode" value="today"><span>Today</span></label>
+      <label><input type="radio" name="mode" value="comeback" checked><span>With comeback path</span></label>
+    </div>
+    <div class="hint" id="modehint"></div>
+  </fieldset>
+  <div class="field">
+    <label for="wait">Wait for the comeback ping</label>
+    <select id="wait">
+      <option value="60">60 seconds (as today)</option>
+      <option value="90" selected>90 seconds</option>
+      <option value="120">120 seconds</option>
+    </select>
+  </div>
+  <div class="field">
+    <label for="answer">Their usual time to answer: <b id="answerval">75</b> seconds</label>
+    <input type="range" id="answer" min="10" max="120" value="75" step="5">
+    <div class="hint">Or tap the buttons on the phone yourself.</div>
+  </div>
+  <div class="field">
+    <div class="row">
+      <button class="btn primary" id="send">Send the next callout</button>
+      <button class="btn" id="reset">Reset</button>
+    </div>
+    <div class="hint">The demo clock runs 10 times faster than real time.</div>
+  </div>
+</section>
+
+<main class="layout">
+  <section aria-labelledby="rost">
+    <h2 class="section" id="rost">Your responders</h2>
+    <div id="roster"></div>
+  </section>
+
+  <section class="phonecol" aria-labelledby="ph">
+    <h2 class="section" id="ph" style="text-align:center">On their phone</h2>
+    <div class="phone"><div class="screen" id="screen"></div></div>
+    <div class="note" id="phonenote"></div>
+  </section>
+
+  <section class="feedcol" aria-labelledby="fd">
+    <h2 class="section" id="fd">Activity</h2>
+    <div class="feed"><ol id="log" aria-live="polite"></ol></div>
+  </section>
+</main>
+
+<footer>
+  <b>What to try:</b> leave it on "With comeback path" and click <b>Send the next callout</b>. The quiet responder gets first chance. Then set the wait to 60 seconds and answer time to 75 and send again: the offer expires before they can answer, which is what happens today. Switch to "Today" to see the quiet responder not asked at all. Use the Kip tab to see two cards side by side.
+</footer>
+
+<script>
+(function () {
+  var SPEED_TICK_MS = 100;            // one demo second per 100 ms = 10x real time
+  var $ = function (s) { return document.querySelector(s); };
+
+  function base() {
+    return {
+      linda: {
+        handler: 'Linda Pruitt', area: 'Uptown', next: 'Nightwell', nextOwn: false,
+        incident: 'A man dressed as a lighthouse is refusing to leave the museum roof.',
+        order: ['farlight'], quietKey: 'farlight', n: 41310, log: [],
+        cards: {
+          farlight: { name: 'Farlight', area: 'Uptown', week: 1, usual: 12, p: 11, t: 2, last: '14 Aug',
+                      quietText: 'No pings for 5 days.', status: 'quiet', note: '' }
+        }
+      },
+      kip: {
+        handler: 'Kip', area: 'Eastgate', next: 'The Gale', nextOwn: true,
+        incident: 'A mime is holding a sit-in at the power station.',
+        order: ['mite', 'gale'], quietKey: 'mite', n: 41310, log: [],
+        cards: {
+          mite: { name: 'Meteor Mite', area: 'Eastgate', week: 2, usual: 11, p: 14, t: 3, last: '19 Aug',
+                  quietText: 'Only 2 pings in 7 days.', status: 'quiet', note: '' },
+          gale: { name: 'The Gale', area: 'Eastgate', week: 17, usual: 13, p: 69, t: 48, last: 'today',
+                  quietText: '', status: 'busy', note: '' }
+        }
+      }
+    };
+  }
+
+  var S = base(), view = 'linda', running = false, timer = null, sim = 0, offer = null, showWhy = false, phone = { kind: 'idle' };
+  var clockMin = 2;
+
+  function mode() { return document.querySelector('input[name=mode]:checked').value; }
+  function V() { return S[view]; }
+  function Q() { return V().cards[V().quietKey]; }
+  function pct(c) { return Math.round(100 * c.t / c.p); }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (ch) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch]; }); }
+
+  function stamp() { clockMin += 1; var h = 14 + Math.floor(clockMin / 60), m = clockMin % 60; return h + ':' + (m < 10 ? '0' : '') + m; }
+  function addLog(text) { V().log.unshift({ t: stamp(), text: text }); }
+
+  function banner(c) {
+    var m = mode(), w = $('#wait').value;
+    if (c.status === 'busy') return '';
+    if (c.status === 'asking') return '<div class="banner blue"><strong>Offer out now</strong>The comeback ping is on ' + esc(c.name) + '’s phone.</div>';
+    if (c.status === 'back') return '<div class="banner green"><strong>Back in rotation</strong>' + esc(c.name) + ' took the comeback ping. ' + esc(c.note) + '</div>';
+    if (c.status === 'missed') return '<div class="banner red"><strong>Offer expired</strong>' + esc(c.note) + '</div>';
+    if (m === 'today') return '<div class="banner plain"><strong>' + esc(c.quietText) + '</strong>Nothing on this screen says why.</div>';
+    var out = '<div class="banner amber"><strong>' + esc(c.quietText) + ' The next suitable callout goes to ' + esc(c.name) + ' first.</strong>'
+            + 'They get a ' + esc(w) + '-second wait, so a slow answer isn’t lost.'
+            + '<br><button class="linkbtn" id="why" aria-expanded="' + showWhy + '">Why am I seeing this?</button>';
+    if (showWhy) out += '<div class="explain">Recent offers to ' + esc(c.name) + ' ran out before they could answer. The system counts that like a “no,” so they moved down the order and stopped being asked. This path gives them a fair first chance. (Draft wording.)</div>';
+    return out + '</div>';
+  }
+
+  function renderRoster() {
+    var h = '';
+    V().order.forEach(function (k) {
+      var c = V().cards[k];
+      var label = { quiet: 'Quiet', busy: 'Busy', back: 'Back in rotation', asking: 'Offer out', missed: 'Offer expired' }[c.status];
+      h += '<article class="card" data-card="' + k + '"><header><h3>' + esc(c.name) + '</h3><span class="chip">' + esc(c.area) + '</span>'
+        + '<span class="pill ' + c.status + '">' + label + '</span></header>'
+        + '<div class="stats"><div class="stat"><b>' + c.week + '</b><span>' + (c.week === 1 ? 'ping' : 'pings') + ' in 7 days (usually ' + c.usual + ')</span></div>'
+        + '<div class="stat"><b>' + pct(c) + '%</b><span>answered in time</span></div>'
+        + '<div class="stat"><b>' + esc(c.last) + '</b><span>last taken</span></div></div>'
+        + (k === V().quietKey ? banner(c) : (c.note ? '<div class="banner plain">' + esc(c.note) + '</div>' : ''))
+        + '</article>';
+    });
+    $('#roster').innerHTML = h;
+    var why = $('#why'); if (why) why.onclick = function () { showWhy = !showWhy; renderRoster(); };
+  }
+
+  function renderLog() {
+    var items = V().log;
+    $('#log').innerHTML = items.length
+      ? items.map(function (e) { return '<li><time>' + e.t + '</time>' + esc(e.text) + '</li>'; }).join('')
+      : '<li class="empty">No callouts yet. Click “Send the next callout.”</li>';
+  }
+
+  function renderPhone() {
+    var q = Q(), s = $('#screen'), head = '<div class="who">' + esc(q.name) + '’s phone</div>';
+    if (phone.kind === 'idle') {
+      s.innerHTML = head + '<h3>Rook</h3><div class="idle">No offers right now.<br>' + (mode() === 'today' ? 'Today, ' + esc(q.name) + ' would not be asked about the next callout.' : 'Send a callout to see a comeback ping.') + '</div>';
+    } else if (phone.kind === 'offer') {
+      var left = Math.max(0, offer.wait - sim), w = Math.max(0, 100 * left / offer.wait);
+      s.innerHTML = head + '<h3>New callout</h3><div class="offer-title">' + esc(V().area) + '</div><div class="offer-body">' + esc(V().incident) + '</div>'
+        + '<div class="bar' + (left <= 15 ? ' late' : '') + '"><i style="width:' + w + '%"></i></div>'
+        + '<div class="secs"><span>' + left + ' s left</span><span>wait: ' + offer.wait + ' s</span></div>'
+        + '<div class="answerbtns"><button class="take" id="take">Take it</button><button class="down" id="down">Turn down</button></div>';
+      $('#take').onclick = function () { finish('taken'); };
+      $('#down').onclick = function () { finish('down'); };
+    } else if (phone.kind === 'taken') {
+      s.innerHTML = head + '<h3>Rook</h3><div class="result"><div class="big">✓</div><b>You took it</b><p>' + esc(phone.msg) + '</p></div>';
+    } else if (phone.kind === 'down') {
+      s.innerHTML = head + '<h3>Rook</h3><div class="result"><div class="big">—</div><b>You turned it down</b><p>' + esc(phone.msg) + '</p></div>';
+    } else {
+      s.innerHTML = head + '<h3>Rook</h3><div class="result"><div class="big">⏱</div><b>This offer has gone</b><p>' + esc(phone.msg) + '</p></div>';
+    }
+    $('#phonenote').textContent = 'Demo clock: ' + (phone.kind === 'offer' ? sim + ' s elapsed' : 'stopped') + ' (10× speed)';
+  }
+
+  function renderModeHint() {
+    $('#modehint').textContent = mode() === 'today'
+      ? 'Today: the 60-second wait, and a quiet responder stays at the bottom.'
+      : 'Proposed: a quiet responder gets first chance, and the handler is told.';
+    var today = mode() === 'today';
+    $('#wait').disabled = today;
+  }
+
+  function renderAll() { renderModeHint(); renderRoster(); renderLog(); renderPhone(); $('#send').disabled = running; $('#answerval').textContent = $('#answer').value; }
+
+  function stopTimer() { if (timer) { clearInterval(timer); timer = null; } running = false; }
+
+  function bump(c, taken) { c.p += 1; c.week += 1; if (taken) { c.t += 1; c.last = 'today'; } }
+
+  function sendCallout() {
+    if (running) return;
+    var v = V(), q = Q(); v.n += 1;
+    addLog('Callout ' + v.n + ' in ' + v.area + ': ' + v.incident);
+    if (mode() === 'today') {
+      addLog(v.next + ' ranks first and is asked' + (v.nextOwn ? '' : ' (another handler’s responder)') + '. ' + q.name + ' is not asked.');
+      if (v.nextOwn) { bump(v.cards.gale, true); v.cards.gale.note = ''; }
+      addLog(v.next + ' took it.');
+      phone = { kind: 'idle' };
+      renderAll();
+      return;
+    }
+    running = true; sim = 0; showWhy = showWhy && true;
+    offer = { wait: parseInt($('#wait').value, 10), answerAt: parseInt($('#answer').value, 10) };
+    q.status = 'asking'; q.note = '';
+    addLog('Comeback ping to ' + q.name + ' first, ' + offer.wait + '-second wait.');
+    phone = { kind: 'offer' };
+    renderAll();
+    timer = setInterval(function () {
+      sim += 1;
+      if (offer.answerAt <= offer.wait && sim >= offer.answerAt) { finish('taken'); return; }
+      if (sim >= offer.wait) { finish('missed'); return; }
+      renderPhone();
+    }, SPEED_TICK_MS);
+  }
+
+  function finish(outcome) {
+    if (!running) return;
+    var v = V(), q = Q(), at = sim;
+    stopTimer();
+    if (outcome === 'taken') {
+      bump(q, true); q.status = 'back'; q.note = 'Took it after ' + at + ' seconds.';
+      addLog(q.name + ' took it after ' + at + ' seconds.');
+      phone = { kind: 'taken', msg: 'Answered after ' + at + ' s, inside the ' + offer.wait + '-second wait.' };
+    } else {
+      bump(q, false); q.status = 'missed';
+      if (outcome === 'down') { q.note = q.name + ' turned it down. The offer moved on.'; addLog(q.name + ' turned it down after ' + at + ' seconds.'); phone = { kind: 'down', msg: 'The offer moved to the next responder.' }; }
+      else { q.note = q.name + ' usually needs ' + offer.answerAt + ' s and the wait was ' + offer.wait + ' s. Try a longer wait.'; addLog(q.name + ' did not answer in ' + offer.wait + ' seconds. The offer moved on.'); phone = { kind: 'missed', msg: 'It went to the next responder after ' + offer.wait + ' seconds.' }; }
+      addLog(v.next + ' took it' + (v.nextOwn ? '.' : ' (another handler’s responder).'));
+      if (v.nextOwn) bump(v.cards.gale, true);
+    }
+    renderAll();
+  }
+
+  function reset() { stopTimer(); S = base(); showWhy = false; phone = { kind: 'idle' }; clockMin = 2; renderAll(); }
+
+  document.querySelectorAll('.tab').forEach(function (b) {
+    b.addEventListener('click', function () {
+      if (b.dataset.view === view) return;
+      stopTimer(); view = b.dataset.view; phone = { kind: 'idle' }; showWhy = false;
+      document.querySelectorAll('.tab').forEach(function (t) { t.setAttribute('aria-pressed', String(t === b)); });
+      renderAll();
+    });
+  });
+  document.querySelectorAll('input[name=mode]').forEach(function (r) { r.addEventListener('change', function () { if (!running) { phone = { kind: 'idle' }; for (var k in V().cards) { if (V().cards[k].status !== 'busy') V().cards[k].status = 'quiet'; V().cards[k].note = ''; } } renderAll(); }); });
+  $('#wait').addEventListener('change', renderAll);
+  $('#answer').addEventListener('input', function () { $('#answerval').textContent = this.value; });
+  $('#send').addEventListener('click', sendCallout);
+  $('#reset').addEventListener('click', reset);
+
+  renderAll();
+})();
+</script>
+</body>
+</html>
