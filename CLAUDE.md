@@ -57,3 +57,7 @@ Proximity weight 0.45→0.60, acceptance 0.40→0.25, ping wait 90s→60s; also 
 - **All 147 tickets, my grouping:** quiet phone 30, gone before answer 15, other ping problems 6 (all before 4.2 and closed; the three duplicate-notification tickets fit the 4.2 fix), filters 16, console polish 22, console bugs 10, missing features 10, admin 12, Supply 26.
 - **Who files:** four handlers (Desmond Okafor, Linda Pruitt, Simone Fischer, Yusuf Demir) filed 69 of 147 tickets; Aunt Dot, Kip and Halloran filed none.
 - **Not yet done:** talk to Linda and Desmond (starved, vocal, not interviewed) and to Aunt Dot and Kip (starved, silent, interviewed).
+- **Impact report** is saved at `01-origin-story/4-2-impact-report.md`. The 90s to 60s wait is the strong cause of the missed-ping jump: missed rose in every hour band, ping position and area, and the gap after a miss went 92s to 62s. It is not time of day, position, geography or season.
+- **New:** since 4.2, 22% of taken callouts went to a responder outside the area (0% before), and out-of-area pings are missed 30% of the time. No ticket or interview mentions it.
+- **Farlight, week by week:** 75 pings before 12 Aug, 11 since; last taken 14 Aug, none since 28 Aug. Linda Pruitt's ticket dates match the log exactly.
+- **Confidence (0–95):** ping counts 90, wait as cause 75, score knock-on for the four 45 (needs Wen's score history and answer times), ticket grouping 70, interviews 40.
