@@ -24,6 +24,12 @@ prompt library built from your own questions.
 
 ### 1.
 
+I just joined Rook Industries as PM for Rook Dispatch. Use rook-wiki (search_wiki, then read_page or read_database). Read About Rook, Glossary, Team directory, Releases, Q3 roadmap, the product briefs, and 00-rook/company/notes/handoff-from-priya.docx. On the 4.2 release, comments use roles: map them with the Team directory. Add to the CLAUDE.md at the root of this folder what you'd need to know to help me do my job here: the products, the people, the vocabulary, where things stand. Leave the session scope block at the top. Keep it under two pages.
+
 ### 2.
 
+I just joined Rook Industries as PM for Rook Dispatch. Read everything in 00-rook/company/and add to the CLAUDE.md at the root of this folder, what you'd need to know to help me do my job here: the products, the people, the vocabulary, where things stand. Leave the session scope block at the top. Keep it under two pages.
+
 ### 3.
+
+What's contradictory or missing, not just in the company documents, but across Rook's wiki, its database, and the files in my repo?
