@@ -23,3 +23,7 @@ Use the rook-database connector. Call describe_table on pings, then run_query. E
 Pick one responder from the pings table who went quiet. Show me every week since June: how many pings, and what they did with each. Use their name.
 
 ### 3.
+
+_Drafted with Claude's help at my request, then run on 4 Nov 2026. Output: `number-for-helen.md` in this folder._
+
+If I could put only one number in front of the Director of Product, which would it be, and why not the weekly acceptance rate? Show me the rows it came from, and say what the number can't tell her. Use only the pings table. Save it as 03-rewind/number-for-helen.md.

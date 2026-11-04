@@ -1,0 +1,23 @@
+quiet-hero-check - manual run
+Started: 2026-11-04
+Window: 31 August to 6 September 2026 (the latest offer in the data is 6 September)
+Source: pings table, Rook database.
+
+QUIET (under half their usual week)
+  Farlight: 0 offers vs 11.9 usually (0%), 0 taken, 0 missed
+  Vesper: 1 offer vs 13.7 usually (7%), 0 taken, 1 missed
+  The Undertow: 1 offer vs 11.9 usually (8%), 0 taken, 1 missed
+  Meteor Mite: 1 offer vs 11.1 usually (9%), 0 taken, 1 missed
+
+WATCH (50 to 80% of usual)
+  Corporal Ashgrove: 7 offers vs 10.0 usually (70%), 5 taken, 1 missed
+  Halfmoon: 8 offers vs 11.0 usually (73%), 7 taken, 0 missed
+
+4 of 16 heroes are quiet. The other 10 are at or above 121% of their usual week.
+
+Note: "quiet" means few offers, not that the hero did anything wrong. Farlight was
+not offered anything at all in this window, so nothing was missed because nothing
+arrived. The other three received one offer each in the week, and missed it.
+
+What changed since last time
+  - First run of this check, so there is nothing to compare with.

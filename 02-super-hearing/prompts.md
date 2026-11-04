@@ -23,3 +23,7 @@ Use the rook-database connector. Call describe_table on support_tickets, then ru
 You've now read both piles. Where do they disagree? What's loud in the interviews but rare in the tickets, and what's all over the tickets that nobody brought up in the interviews?
 
 ### 3.
+
+_Drafted with Claude's help at my request, then run on 4 Nov 2026. Output: `interview-guide.md` in this folder._
+
+The four handlers I interviewed aren't the ones filing the quiet-phone tickets. Draft an interview guide for Linda Pruitt and Desmond Okafor: seven questions, plain language, none that lead them to blame the release. Use only what's in the tickets and interviews, and save it as 02-super-hearing/interview-guide.md.
