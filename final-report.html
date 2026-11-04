@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Final Project Report: Rook Dispatch, Release 4.2</title>
+<style>
+  :root { --bg:#f6f8fc; --card:#ffffff; --ink:#10203a; --mute:#44546f; --line:#d5dde9; --accent:#1a46b8; --amber:#b45309; --amberbg:#fff4de; --soft:#eaf0fb; --good:#0f6b3d; --bad:#a4261b; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#0b1630; --card:#12213f; --ink:#eef3ff; --mute:#b6c3dd; --line:#2a3b5f; --accent:#8db4ff; --amber:#ffc46b; --amberbg:#3a2a0d; --soft:#192b4d; --good:#6fe0a0; --bad:#ff9d93; } }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; overflow-x:hidden; }
+  .wrap { max-width:900px; margin:0 auto; padding:0 18px 70px; }
+  header.top { padding:44px 0 22px; border-bottom:3px solid var(--accent); margin-bottom:8px; }
+  .eyebrow { font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); font-weight:700; }
+  h1 { font-size:clamp(28px,5.4vw,44px); line-height:1.12; margin:8px 0 10px; letter-spacing:-.01em; overflow-wrap:anywhere; }
+  .lede { font-size:18px; color:var(--mute); max-width:62ch; margin:0 0 14px; }
+  .meta { display:flex; flex-wrap:wrap; gap:6px 18px; font-size:13.5px; color:var(--mute); }
+  .meta b { color:var(--ink); }
+  nav.toc { display:flex; flex-wrap:wrap; gap:6px 14px; margin:14px 0 4px; font-size:14px; }
+  nav.toc a { color:var(--accent); text-decoration:none; font-weight:600; }
+  section { margin:34px 0; }
+  h2 { font-size:clamp(22px,4vw,28px); margin:0 0 6px; line-height:1.2; }
+  h2 .n { display:inline-block; min-width:1.7em; color:var(--accent); }
+  h3 { font-size:18px; margin:18px 0 6px; }
+  p { margin:8px 0; }
+  .sub { color:var(--mute); margin:0 0 12px; max-width:70ch; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px 18px; margin:12px 0; }
+  .card.key { border-left:6px solid var(--accent); }
+  .tag { display:inline-block; font-size:11px; font-weight:700; letter-spacing:.05em; padding:1px 8px; border-radius:999px; border:1px solid var(--line); vertical-align:middle; white-space:normal; max-width:100%; }
+  .tag.obs { background:var(--accent); color:#fff; border-color:var(--accent); }
+  @media (prefers-color-scheme: dark) { .tag.obs { color:#0b1630; } }
+  .tag.est { background:var(--amberbg); color:var(--amber); border-color:var(--amber); }
+  ul { margin:8px 0; padding-left:22px; } li { margin:5px 0; }
+  .tablewrap { overflow-x:auto; border:1px solid var(--line); border-radius:10px; background:var(--card); margin:12px 0; }
+  table { width:100%; border-collapse:collapse; font-size:14.5px; }
+  th, td { text-align:left; padding:9px 11px; border-bottom:1px solid var(--line); vertical-align:top; }
+  th { background:var(--soft); font-size:12px; letter-spacing:.05em; text-transform:uppercase; color:var(--mute); }
+  tr:last-child td { border-bottom:0; }
+  td.num, th.num { text-align:right; white-space:nowrap; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:12px; }
+  .stat { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:14px 16px; }
+  .stat .big { font-size:30px; font-weight:800; letter-spacing:-.01em; line-height:1.1; }
+  .stat .big small { font-size:16px; font-weight:600; color:var(--mute); }
+  .stat p { margin:4px 0 0; font-size:14px; color:var(--mute); }
+  code { font-family:ui-monospace,Menlo,Consolas,monospace; font-size:.9em; background:var(--soft); border:1px solid var(--line); border-radius:4px; padding:0 5px; overflow-wrap:anywhere; }
+  a { color:var(--accent); overflow-wrap:anywhere; }
+  .chartbox { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:10px; }
+  #weekly { width:100%; display:block; }
+  .key2 { display:flex; flex-wrap:wrap; gap:6px 16px; font-size:13px; margin:6px 4px 2px; }
+  .key2 i { display:inline-block; width:22px; border-top:4px solid; vertical-align:middle; margin-right:6px; }
+  .callout { background:var(--amberbg); border:1px solid var(--amber); border-radius:10px; padding:10px 14px; margin:12px 0; font-size:15px; }
+  footer { color:var(--mute); font-size:13.5px; border-top:1px solid var(--line); padding-top:14px; margin-top:40px; }
+  @media (max-width:480px) { table { font-size:13px; } th, td { padding:7px 6px; } th { font-size:10px; letter-spacing:0; } #weektable td:first-child { white-space:nowrap; } #weektbl th:nth-child(4), #weektbl td:nth-child(4) { display:none; } }
+  @media print { body { background:#fff; } .card, .stat, .tablewrap { break-inside:avoid; } nav.toc { display:none; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <div class="eyebrow">Claude Code for PMs · Final Project Report</div>
+  <h1>Rook Dispatch, Release 4.2: what it did, to whom, and the way back</h1>
+  <p class="lede">Release 4.2 shipped on 12 August 2026 and landed badly. This report pulls together what six sessions of work found across the Rook wiki, the Rook database and the routing code, and what to do next.</p>
+  <div class="meta">
+    <span><b>Cohort:</b> ccpm-2026.1</span>
+    <span><b>GitHub:</b> <a href="https://github.com/tosachin99/claude-code-for-pms-final">tosachin99/claude-code-for-pms-final</a></span>
+    <span><b>Data window:</b> 29 June to 6 September 2026 (tickets to 7 September)</span>
+    <span><b>Report date:</b> 4 November 2026</span>
+  </div>
+  <nav class="toc" aria-label="Sections"><a href="#s1">1 The answer</a><a href="#s2">2 Numbers</a><a href="#s3">3 Why</a><a href="#s4">4 Sources compared</a><a href="#s5">5 Way back</a><a href="#s6">6 Confidence</a><a href="#s7">7 Work by module</a><a href="#s8">8 Gaps</a><a href="#s9">9 Repo index</a></nav>
+</header>
+
+<p class="sub" style="margin-top:14px"><span class="tag obs">OBSERVED</span> counted directly from the wiki, the database tables or the files. <span class="tag est">ESTIMATED</span> worked out or inferred, not directly measured. Rook Industries is a fictional course scenario, and no attempt was made to identify anyone behind a responder cover identity.</p>
+
+<!-- 1 -->
+<section id="s1">
+  <h2><span class="n">1</span>The answer in brief</h2>
+  <div class="card key">
+    <ul>
+      <li><b>What 4.2 changed.</b> Two things at once: an offer now stays on a hero’s phone for 60 seconds instead of 90, and the ranking leans harder on speed (0.45 → 0.60) and less on “said yes lately” (0.40 → 0.25). <span class="tag obs">OBSERVED</span> (release notes; <code>config.py</code>)</li>
+      <li><b>How big.</b> Missed offers rose from 2.3% to 18.0% and the share taken fell from 76.6% to 64.0%. The change began on release day and shows in every time of day, every position in the order and all 15 areas. <span class="tag obs">OBSERVED</span> (pings table)</li>
+      <li><b>Who it hit hardest.</b> Four heroes (Farlight, The Undertow, Meteor Mite, Vesper) went from 306 offers in 44 days to 56 in 26. None has taken an offer since 19 August. <span class="tag obs">OBSERVED</span></li>
+      <li><b>Why, most likely.</b> The shorter wait turns slow answers into misses. The code scores a miss exactly like a “no” (−0.12, against +0.08 for a yes), so a hero must say yes at least 60% of the time to hold steady, and scores never ease back. The four fell to 18–29%. <span class="tag est">ESTIMATED</span> (the database holds no scores or answer times)</li>
+      <li><b>“It is just August.”</b> Not supported. Acceptance sat at 72–81% for six weeks, then dropped on 12 August. There is no earlier-year data to compare. <span class="tag obs">OBSERVED</span></li>
+      <li><b>Recommendation.</b> Give quiet heroes a visible comeback path, stop counting a miss like a refusal, and confirm the real scores with Wen Li before building. A draft brief and a clickable prototype are in the repo.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- 2 -->
+<section id="s2">
+  <h2><span class="n">2</span>The numbers, before and after</h2>
+  <p class="sub">“Before” is 29 June to 11 August (44 days). “After” is 12 August to 6 September (26 days) for offers, and to 7 September (27 days) for tickets. An <b>offer</b> is what the company calls a “ping”: one job request sent to one responder’s phone.</p>
+  <div class="grid">
+    <div class="stat"><div class="big">2.3% → 18.0%</div><p>Missed offers: 25 of 1,085 → 110 of 611. <span class="tag obs">OBSERVED</span> pings table</p></div>
+    <div class="stat"><div class="big">76.6% → 64.0%</div><p>Offers taken. <span class="tag obs">OBSERVED</span> pings table</p></div>
+    <div class="stat"><div class="big">306 → 56</div><p>Offers to the four quiet heroes (about 49 → 15 a week). <span class="tag obs">OBSERVED</span> pings table</p></div>
+    <div class="stat"><div class="big">5.5% → 11.1%</div><p>Callouts nobody took: 48 of 879 → 49 of 440. <span class="tag obs">OBSERVED</span> callouts and pings</p></div>
+    <div class="stat"><div class="big">6.4 → 27.7</div><p>Support tickets a week: 40 → 107. <span class="tag obs">OBSERVED</span> tickets table</p></div>
+    <div class="stat"><div class="big">92 s → 62 s</div><p>Gap before the next offer after a miss, so the shorter wait is real. <span class="tag obs">OBSERVED</span> pings table</p></div>
+  </div>
+  <h3>Week by week (weeks start on the release date)</h3>
+  <div class="chartbox">
+    <svg id="weekly" role="img" aria-label="Weekly share of offers taken and missed, before and after release 4.2"></svg>
+    <div class="key2"><span><i style="border-color:var(--accent)"></i>Taken %</span><span><i style="border-color:var(--bad);border-top-style:dashed"></i>Missed %</span><span><i style="border-color:var(--mute);border-top-style:dotted"></i>4.2 ships, 12 Aug</span></div>
+  </div>
+  <p class="small sub" style="font-size:13.5px">First and last points are partial weeks (29–30 June, and 2–6 September). <span class="tag obs">OBSERVED</span> pings table.</p>
+  <div class="tablewrap"><table id="weektbl">
+    <thead><tr><th>Week</th><th class="num">Offers</th><th class="num">Taken %</th><th class="num">Refused %</th><th class="num">Missed %</th></tr></thead>
+    <tbody id="weektable"></tbody>
+  </table></div>
+  <h3>The four quiet heroes, and one example</h3>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Hero</th><th class="num">A week: before → after</th><th class="num">Missed after</th><th>Last offer taken</th></tr></thead>
+    <tbody>
+      <tr><td>Farlight</td><td class="num">11.9 → 3.0</td><td class="num">64%</td><td>14 Aug</td></tr>
+      <tr><td>The Undertow</td><td class="num">11.9 → 3.8</td><td class="num">64%</td><td>17 Aug</td></tr>
+      <tr><td>Meteor Mite</td><td class="num">11.1 → 3.8</td><td class="num">57%</td><td>19 Aug</td></tr>
+      <tr><td>Vesper</td><td class="num">13.7 → 4.6</td><td class="num">53%</td><td>17 Aug</td></tr>
+    </tbody>
+  </table></div>
+  <p>Farlight had 75 offers before 12 August and 11 since, and none after 28 August. Their handler’s tickets give the same dates as the offer history, so two independent sources agree. <span class="tag obs">OBSERVED</span> pings and tickets tables</p>
+</section>
+
+<!-- 3 -->
+<section id="s3">
+  <h2><span class="n">3</span>Why it happened</h2>
+  <p class="sub">How the routing code works, in plain terms, from <code>00-rook/code/dispatch-routing/</code>.</p>
+  <div class="card">
+    <ol style="margin:0;padding-left:22px">
+      <li>List who is free in the area (<code>availability.py</code>).</li>
+      <li>Score each by speed, skills and “said yes lately” (<code>routing.py</code>, weights in <code>config.py</code>).</li>
+      <li>Ask the top hero and wait 60 seconds (<code>offer.py</code>, <code>config.py</code>).</li>
+      <li>A yes adds 0.08. A no or no answer takes off 0.12. The score stays between 0 and 1, and never drifts back by itself (<code>history.py</code>).</li>
+    </ol>
+  </div>
+  <ul>
+    <li><b>The break-even point.</b> Holding steady needs a yes at least 60% of the time (0.12 ÷ 0.20). Before 4.2, all 16 heroes were above that (69–85%). Afterwards exactly four fell below it (18–29%). <span class="tag est">ESTIMATED</span> arithmetic from the code and counts from the pings table</li>
+    <li><b>Misses, not refusals, did the damage.</b> Across the 16 heroes, how often they said yes after 4.2 tracks their change in offers at 0.94, and their missed share at −0.91. How often they refused before tracks it at only −0.27. This is a small sample of 16 heroes. <span class="tag obs">OBSERVED</span></li>
+    <li><b>Being ranked low means not being asked.</b> About 74% of callouts end at the first offer (982 of 1,319), so a low rank rarely gets work. <span class="tag obs">OBSERVED</span></li>
+    <li><b>Hidden by the average.</b> The headline rate recovered to 75.2% in early September partly because the four quiet heroes are now almost absent from it. <span class="tag obs">OBSERVED</span></li>
+    <li><b>An unexpected side effect.</b> The share of offers going to a hero in their own area fell from 82.9% to 60.6%, and 22% of taken callouts now go to someone outside the area (0 of 831 before). The cause is not established. <span class="tag obs">OBSERVED</span> effect, <span class="tag est">ESTIMATED</span> cause</li>
+  </ul>
+  <div class="callout"><b>Marcus Oyelaran’s open question (14 August):</b> was the change meant to apply to heroes who turn jobs down? The code answers half of it: one formula, no special case for decliners, and a comment in <code>history.py</code> says a miss and a refusal are the same on purpose. Whether anyone intended that to meet a 60-second wait is not recorded. The sharper question for Wen Li: <i>“Was a missed ping meant to cost the same as a ‘no’ once the wait dropped to 60 seconds?”</i></div>
+</section>
+
+<!-- 4 -->
+<section id="s4">
+  <h2><span class="n">4</span>Interviews, tickets and numbers compared</h2>
+  <p class="sub">Four interviews (of 15 handlers), 147 tickets and the offer history do not tell the same story on their own.</p>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Ticket group</th><th class="num">Before</th><th class="num">After</th><th class="num">Open</th></tr></thead>
+    <tbody>
+      <tr><td>Quiet phone (“nothing coming through”)</td><td class="num">0</td><td class="num">30</td><td class="num">30</td></tr>
+      <tr><td>Offer gone before they could answer</td><td class="num">0</td><td class="num">15</td><td class="num">15</td></tr>
+      <tr><td>Other ping problems (duplicates, no signal, mis-taps)</td><td class="num">6</td><td class="num">0</td><td class="num">0</td></tr>
+      <tr><td>Saved filters</td><td class="num">2</td><td class="num">14</td><td class="num">6</td></tr>
+      <tr><td>Console polish requests</td><td class="num">11</td><td class="num">11</td><td class="num">8</td></tr>
+      <tr><td>Console bugs and slowness</td><td class="num">5</td><td class="num">5</td><td class="num">5</td></tr>
+      <tr><td>Missing features and how-to</td><td class="num">4</td><td class="num">6</td><td class="num">4</td></tr>
+      <tr><td>Account and admin</td><td class="num">2</td><td class="num">10</td><td class="num">6</td></tr>
+      <tr><td>Supply: gear and requisitions</td><td class="num">10</td><td class="num">16</td><td class="num">9</td></tr>
+      <tr><td><b>Total</b></td><td class="num"><b>40</b></td><td class="num"><b>107</b></td><td class="num"><b>83</b></td></tr>
+    </tbody>
+  </table></div>
+  <p class="sub" style="font-size:13.5px">Grouped by reading every ticket; the grouping is a judgement call. <span class="tag obs">OBSERVED</span> counts, tickets table.</p>
+  <ul>
+    <li><b>They barely overlap in who speaks.</b> 11 handlers filed 146 of the 147 tickets and none was interviewed. The four interviewed handlers filed one ticket between them. The two most affected heroes, Farlight and The Undertow, have handlers who filed 40 tickets but were not interviewed. Vesper’s and Meteor Mite’s handlers were interviewed and filed none. <span class="tag obs">OBSERVED</span></li>
+    <li><b>Volume is not breadth.</b> The 30 quiet-phone tickets come from just four handlers. <span class="tag obs">OBSERVED</span></li>
+    <li><b>The tickets and the interviews describe different faces of the same problem.</b> Interviewees understate the ping problem (“not really a complaint”) and raised it only in a console-research call. Tickets escalate (“I would rather know than guess”). All 45 quiet-phone and vanished-offer tickets are still open. <span class="tag obs">OBSERVED</span></li>
+    <li><b>Only in interviews:</b> a quiet Meteor Mite next to a busy The Gale (13.0 → 18.6 offers a week), and a handler’s wish to be alerted too. <b>Only in tickets:</b> filters (16), Supply fulfilment, console bugs, account issues. <span class="tag obs">OBSERVED</span></li>
+    <li><b>The handover note’s claim does not hold.</b> The note said the drop was mostly seasonal and that filter tickets were noise. The offer history shows a step change on release day, and filter tickets include 4 about silent resets. <span class="tag obs">OBSERVED</span></li>
+    <li><b>Framing.</b> “Responders have stopped answering their phones” is wrong for the worst-hit four: they stopped being asked. <span class="tag obs">OBSERVED</span></li>
+  </ul>
+</section>
+
+<!-- 5 -->
+<section id="s5">
+  <h2><span class="n">5</span>The way back</h2>
+  <p class="sub">The Director of Product asked for something a handler would notice and a quiet hero would feel, “not a setting.” The brief and prototype answer that.</p>
+  <div class="card key">
+    <h3 style="margin-top:0">A comeback path (draft, for the Director to react to)</h3>
+    <ul>
+      <li><b>For the hero:</b> after a quiet stretch (length still to decide), the next suitable callout goes to them first, with a longer wait.</li>
+      <li><b>For the handler:</b> the hero’s card says so in plain words, so the handler stops guessing.</li>
+      <li><b>Underneath:</b> a missed offer stops costing the same as a refusal, and scores ease back toward the middle over time. This answers a 2019 note in the code that assumed silence means someone stopped taking work.</li>
+    </ul>
+    <p><b>Success measures (proposals):</b> the four back to at least 8 offers a week within three weeks; a yes-rate of 60% or more; no hero with zero offers for 7 days; new quiet-phone tickets from about 8 a week to none within four weeks.</p>
+    <p>Files: <a href="https://github.com/tosachin99/claude-code-for-pms-final/blob/main/05-super-speed/brief.md">brief.md</a> and <a href="https://github.com/tosachin99/claude-code-for-pms-final/blob/main/05-super-speed/prototype.html">prototype.html</a> (download it and open it in a browser; try the Kip tab).</p>
+  </div>
+  <h3>Orders, in priority order (suggested owners)</h3>
+  <ol>
+    <li>Get the real scores and answer times, and confirm the live code matches this copy (Wen Li).</li>
+    <li>Stop counting a missed offer like a “no”, and let scores ease back (Wen Li, Marcus Oyelaran).</li>
+    <li>Test a longer wait on a small group (Marcus Oyelaran).</li>
+    <li>Build the comeback path and the handler card (Wen Li, Sofia Marino).</li>
+    <li>Reply to Linda Pruitt, Desmond Okafor, Aunt Dot and Kip now, since they should not wait for the build (Nadia Hoffmann).</li>
+    <li>Write down how routing decides, which the previous PM left undone.</li>
+  </ol>
+  <p class="sub">Not ready to build yet: the brief still has seven open gaps (section 8), and its owner line is unconfirmed.</p>
+</section>
+
+<!-- 6 -->
+<section id="s6">
+  <h2><span class="n">6</span>How confident</h2>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Group of numbers</th><th class="num">Score (0–95)</th><th>What would firm it up</th></tr></thead>
+    <tbody>
+      <tr><td>Offer counts, gaps, callouts nobody took</td><td class="num">90</td><td>Match them to the analyst’s official weekly report</td></tr>
+      <tr><td>The four quiet heroes’ collapse</td><td class="num">80</td><td>Same check, plus offers after 6 September</td></tr>
+      <tr><td>“Not seasonal”</td><td class="num">80</td><td>Data from before 29 June and from last year</td></tr>
+      <tr><td>The 60-second wait as the cause of the missed jump</td><td class="num">75</td><td>Answer times for each offer</td></tr>
+      <tr><td>Time-of-day, position and area tests</td><td class="num">75</td><td>A larger sample in the overnight band</td></tr>
+      <tr><td>Ticket counts by group</td><td class="num">70</td><td>A second person re-sorting the tickets</td></tr>
+      <tr><td>The score knock-on behind the four (inferred)</td><td class="num">45</td><td>Each hero’s score history</td></tr>
+      <tr><td>Out-of-area effect and its cause</td><td class="num">40</td><td>Travel time for each offer</td></tr>
+      <tr><td>Interview themes</td><td class="num">40</td><td>Interviews with the handlers who filed the tickets</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- 7 -->
+<section id="s7">
+  <h2><span class="n">7</span>What was done, module by module</h2>
+  <p class="sub">All six sessions worked the same Rook case in one repository. Prompts are filed exactly as typed.</p>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Module</th><th>What it produced</th><th class="num">Prompts</th></tr></thead>
+    <tbody>
+      <tr><td>1 · Origin story</td><td>The working file <a href="https://github.com/tosachin99/claude-code-for-pms-final/blob/main/CLAUDE.md">CLAUDE.md</a>: products, people (4.2 comment roles mapped to named staff), vocabulary and where things stand, plus a check of the wiki, database and files against each other for contradictions and gaps.</td><td class="num">3</td></tr>
+      <tr><td>2 · Super hearing</td><td>Four interviews and 147 tickets read together; tickets grouped into nine themes with counts; where the two piles disagree.</td><td class="num">2</td></tr>
+      <tr><td>3 · Rewind</td><td>The offer history before and after 12 August, week by week and per hero, with the rows behind it; Farlight followed week by week. Full write-up: <a href="https://github.com/tosachin99/claude-code-for-pms-final/blob/main/01-origin-story/4-2-impact-report.md">4-2-impact-report.md</a>.</td><td class="num">2</td></tr>
+      <tr><td>4 · X-ray vision</td><td>The routing code explained in plain English with the file for each step; the code checked against the numbers; the answer to the engineering manager’s question; what recovery would take for a quiet hero.</td><td class="num">4</td></tr>
+      <tr><td>5 · Super speed</td><td>A one-page brief and a clickable prototype of the handler console and phone: <a href="https://github.com/tosachin99/claude-code-for-pms-final/blob/main/05-super-speed/brief.md">brief.md</a>, <a href="https://github.com/tosachin99/claude-code-for-pms-final/blob/main/05-super-speed/prototype.html">prototype.html</a>. An interactive case file, <a href="https://github.com/tosachin99/claude-code-for-pms-final/blob/main/05-super-speed/case-file-4-2.html">case-file-4-2.html</a>, adds a replay of each hero’s score under different rules.</td><td class="num">4</td></tr>
+      <tr><td>6 · Sidekicks</td><td>The reusable skill <a href="https://github.com/tosachin99/claude-code-for-pms-final/blob/main/06-sidekicks/review-checklist/SKILL.md">review-checklist</a> (checks each product brief for an owner, a success measure, bounded scope, and the problem before the fix), run twice on 4 November (once by hand, once by the scheduler) and scheduled for Monday mornings.</td><td class="num">1</td></tr>
+    </tbody>
+  </table></div>
+  <h3>review-checklist: what it found</h3>
+  <p>Run twice on 4 November, once by hand and once by the scheduled task, across five briefs (the four on the wiki plus this project’s own draft), it flagged every one, once each, both times: Bulk Callout has no owner, Handler Phone App states the solution before the problem, Requisition Approval Chains widens its scope mid-document, Routing Override Audit Log has no success measure, and the draft brief has no confirmed owner. The same four wiki flags appeared in the 13 October run, so nothing has changed there. Reports: <a href="https://github.com/tosachin99/claude-code-for-pms-final/blob/main/06-sidekicks/review-checklist-run-2026-11-04.txt">run by hand</a> and <a href="https://github.com/tosachin99/claude-code-for-pms-final/blob/main/06-sidekicks/review-checklist-run-2026-11-04-scheduled.txt">run by the scheduled task</a>.</p>
+</section>
+
+<!-- 8 -->
+<section id="s8">
+  <h2><span class="n">8</span>Gaps and who can close them</h2>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Not verified</th><th>Why it matters</th><th>Ask</th></tr></thead>
+    <tbody>
+      <tr><td>Real scores and answer times</td><td>The cause of the four heroes’ collapse is an estimate without them.</td><td>Wen Li</td></tr>
+      <tr><td>Whether the live code matches the folder copy</td><td>Six pieces are empty placeholders and the folder was last changed on 8 October.</td><td>Wen Li</td></tr>
+      <tr><td>Whether a missed offer was meant to cost like a “no”</td><td>Open since 14 August.</td><td>Wen Li</td></tr>
+      <tr><td>Official weekly numbers, and last year’s August</td><td>Needed to test “August is always soft”.</td><td>Ravi Menon</td></tr>
+      <tr><td>Why callouts fell from about 140 to about 118 a week</td><td>Unexplained in any source.</td><td>Ravi Menon</td></tr>
+      <tr><td>Ticket replies, and the handler email on 26 August</td><td>The tickets table only shows open or closed.</td><td>Nadia Hoffmann</td></tr>
+      <tr><td>Interviews with the handlers who filed the quiet-phone tickets</td><td>Only 4 of 15 handlers were interviewed.</td><td>Sofia Marino</td></tr>
+      <tr><td>What happens to a callout nobody takes</td><td>97 ended that way; the code does not say what follows.</td><td>Wen Li</td></tr>
+      <tr><td>Security Policy 4.1, a Supply owner, releases after 4.2</td><td>The policy is not in the wiki; the directory has no Supply owner; there is no 4.3 or Q4 roadmap.</td><td>Helen Achebe</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- 9 -->
+<section id="s9">
+  <h2><span class="n">9</span>Repository index</h2>
+  <p class="sub">Everything referred to above, in <a href="https://github.com/tosachin99/claude-code-for-pms-final">github.com/tosachin99/claude-code-for-pms-final</a>.</p>
+  <ul>
+    <li><code>CLAUDE.md</code>: working context and findings log</li>
+    <li><code>01-origin-story/</code> to <code>06-sidekicks/</code>: one <code>prompts.md</code> per module (16 prompts in total), plus the files named in section 7</li>
+    <li><code>00-rook/</code>: the routing code and the handover note, left in place</li>
+    <li><code>.mcp.json</code>: the wiki and database connections</li>
+  </ul>
+  <footer>This report uses only data from the Rook wiki, the Rook database and the files in this repository. Where a number is estimated rather than counted, it is marked.</footer>
+</section>
+
+</div>
+<script>
+(function () {
+  var W = [
+    { w: "29–30 Jun", n: 45, t: 75.6, d: 22.2, m: 2.2 }, { w: "1–7 Jul", n: 186, t: 77.4, d: 19.9, m: 2.7 },
+    { w: "8–14 Jul", n: 156, t: 77.6, d: 19.9, m: 2.6 }, { w: "15–21 Jul", n: 173, t: 72.3, d: 26.0, m: 1.7 },
+    { w: "22–28 Jul", n: 186, t: 80.6, d: 16.1, m: 3.2 }, { w: "29 Jul–4 Aug", n: 153, t: 75.8, d: 22.2, m: 2.0 },
+    { w: "5–11 Aug", n: 186, t: 75.8, d: 22.6, m: 1.6 }, { w: "12–18 Aug", n: 175, t: 54.3, d: 22.9, m: 22.9, after: true },
+    { w: "19–25 Aug", n: 152, t: 61.8, d: 15.8, m: 22.4, after: true }, { w: "26 Aug–1 Sep", n: 163, t: 68.1, d: 19.0, m: 12.9, after: true },
+    { w: "2–6 Sep", n: 121, t: 75.2, d: 12.4, m: 12.4, after: true }
+  ];
+  var LAB = ["29 Jun", "1 Jul", "8 Jul", "15 Jul", "22 Jul", "29 Jul", "5 Aug", "12 Aug", "19 Aug", "26 Aug", "2 Sep"];
+  W.forEach(function (r, i) { r.l = LAB[i]; });
+  function el(id) { return document.getElementById(id); }
+  el("weektable").innerHTML = W.map(function (r) {
+    return "<tr><td>" + r.w + (r.after ? "<br><b>after 4.2</b>" : "") + "</td><td class='num'>" + r.n + "</td><td class='num'>" + r.t.toFixed(1) + "</td><td class='num'>" + r.d.toFixed(1) + "</td><td class='num'>" + r.m.toFixed(1) + "</td></tr>";
+  }).join("");
+  function draw() {
+    var svg = el("weekly"), box = svg.parentNode, w = Math.max(280, Math.floor(box.clientWidth - 20)), h = 250;
+    var L = 34, R = 10, T = 22, B = 36, pw = w - L - R, ph = h - T - B, step = pw / (W.length - 1);
+    var cs = getComputedStyle(document.documentElement), ink = cs.getPropertyValue("--ink").trim(), mute = cs.getPropertyValue("--mute").trim(), acc = cs.getPropertyValue("--accent").trim(), bad = cs.getPropertyValue("--bad").trim();
+    function X(i) { return L + i * step; } function Y(v) { return T + ph - v / 100 * ph; }
+    var o = "";
+    [0, 25, 50, 75, 100].forEach(function (v) { o += "<line x1='" + L + "' x2='" + (w - R) + "' y1='" + Y(v) + "' y2='" + Y(v) + "' stroke='" + mute + "' stroke-opacity='.25'/><text x='" + (L - 5) + "' y='" + (Y(v) + 4) + "' text-anchor='end' font-size='11' fill='" + mute + "'>" + v + "%</text>"; });
+    var rx = (X(6) + X(7)) / 2;
+    o += "<line x1='" + rx + "' x2='" + rx + "' y1='" + T + "' y2='" + (T + ph) + "' stroke='" + mute + "' stroke-width='2' stroke-dasharray='2 5'/><text x='" + rx + "' y='" + (T - 8) + "' text-anchor='middle' font-size='11.5' font-weight='700' fill='" + ink + "'>4.2 ships</text>";
+    function line(key, col, dash) { return "<polyline fill='none' stroke='" + col + "' stroke-width='3' stroke-dasharray='" + dash + "' stroke-linejoin='round' points='" + W.map(function (r, i) { return X(i).toFixed(1) + "," + Y(r[key]).toFixed(1); }).join(" ") + "'/>" + W.map(function (r, i) { return "<circle cx='" + X(i).toFixed(1) + "' cy='" + Y(r[key]).toFixed(1) + "' r='3.2' fill='" + col + "'/>"; }).join(""); }
+    o += line("t", acc, "0") + line("m", bad, "7 4");
+    var show = w < 520 ? [0, 4, 7, 10] : [0, 2, 4, 6, 7, 8, 9, 10];
+    show.forEach(function (i) { o += "<text x='" + X(i) + "' y='" + (h - 14) + "' text-anchor='" + (i === 0 ? "start" : i === W.length - 1 ? "end" : "middle") + "' font-size='10.5' fill='" + mute + "'>" + W[i].l + "</text>"; });
+    svg.setAttribute("viewBox", "0 0 " + w + " " + h); svg.setAttribute("height", h); svg.innerHTML = o;
+  }
+  draw(); var t; window.addEventListener("resize", function () { clearTimeout(t); t = setTimeout(draw, 120); });
+  if (window.matchMedia) { var mq = window.matchMedia("(prefers-color-scheme: dark)"); if (mq.addEventListener) mq.addEventListener("change", draw); }
+})();
+</script>
+</body>
+</html>

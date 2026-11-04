@@ -1,0 +1,54 @@
+[Saved from the scheduled task "monday-review-checklist", started with "Run now" on 2026-11-04. This is the second run; the first, by hand, is review-checklist-run-2026-11-04.txt.]
+
+review-checklist - scheduled run
+Started: 2026-11-04 22:06 IST (Wednesday)
+Sources: Rook wiki "Product briefs" page and its four briefs (Bulk Callout,
+  Handler Phone App, Requisition Approval Chains, Routing Override Audit Log);
+  the student's draft 05-super-speed/brief.md. All were read.
+  06-sidekicks/briefs/ does not exist, which is not a failure.
+
+Bulk Callout (wiki)
+  owner named ................. NO - flagged
+  success measure ............. yes
+  scope stays bounded ......... yes
+  problem stated before fix ... yes
+  -> 1 flag: no owner is named; it says "nobody's picked it up yet".
+
+Handler Phone App (wiki)
+  owner named ................. yes (the product designer, "exploring for Q4")
+  success measure ............. yes
+  scope stays bounded ......... yes
+  problem stated before fix ... NO - flagged
+  -> 1 flag: it opens with the fix, "We should build a phone app for handlers",
+     and only reaches the problem in the second section.
+
+Requisition Approval Chains (wiki)
+  owner named ................. yes (the Rook Supply team)
+  success measure ............. yes
+  scope stays bounded ......... NO - flagged
+  problem stated before fix ... yes
+  -> 1 flag: it says "That's the whole ask", then adds a way to route around
+     slow approvers, a dashboard, handler visibility and a spreadsheet replacement.
+
+Routing Override Audit Log (wiki)
+  owner named ................. yes (the engineering manager's team)
+  success measure ............. NO - flagged
+  scope stays bounded ......... yes
+  problem stated before fix ... yes
+  -> 1 flag: it covers what gets logged and where it shows, but has no section
+     or line on how anyone would know it is working.
+
+Quiet responders: a comeback path (05-super-speed/brief.md)
+  owner named ................. NO - flagged
+  success measure ............. yes (targets are proposals; baseline is a [GAP])
+  scope stays bounded ......... yes
+  problem stated before fix ... yes
+  -> 1 flag: the owner line reads "[GAP] none named"; the names are only
+     suggested, pending "Confirm with Helen".
+
+5 briefs checked, 5 flagged.
+
+What changed since last time
+  - Compared with tonight's 22:01 run, all five briefs get the same flags.
+  - brief.md now says the prototype is built, which fixes the earlier "not
+    built" note. That edit is not committed yet.

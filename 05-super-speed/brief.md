@@ -44,4 +44,4 @@ Not a setting. A visible comeback path:
 - Reply to Linda Pruitt, Desmond Okafor, Aunt Dot and Kip. They shouldn't wait for the build.
 - Ask Wen: "Was a missed ping meant to cost the same as a 'no' once the wait dropped to 60 seconds?"
 - Sofia mocks the handler card; Helen picks a direction.
-- Still to make: the clickable prototype (not built).
+- Prototype: built. Open `05-super-speed/prototype.html` to click through the handler card and the phone offer.
