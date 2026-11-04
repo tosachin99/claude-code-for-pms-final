@@ -16,6 +16,10 @@ prompt library built from your own questions.
 
 ### 1.
 
+Use the rook-database connector. Call describe_table on pings, then run_query. Every row is one time we pinged a responder, and whether they took it, turned it down, or missed it. Release 4.2 shipped on 12 August. Tell me what changed after that date. Show me the weekly numbers before and after, and show me the rows you used to get them.
+
 ### 2.
+
+Pick one responder from the pings table who went quiet. Show me every week since June: how many pings, and what they did with each. Use their name.
 
 ### 3.
