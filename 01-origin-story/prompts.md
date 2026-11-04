@@ -33,3 +33,11 @@ I just joined Rook Industries as PM for Rook Dispatch. Read everything in 00-roo
 ### 3.
 
 What's contradictory or missing, not just in the company documents, but across Rook's wiki, its database, and the files in my repo?
+
+### 4.
+
+Use the rook-database connector. Call describe_table on support_tickets, then run_query. There are 147 tickets. Same treatment as before: group them, tell me how many are in each group, and quote one line from each. Count every row, including ones that look unrelated.
+
+### 5.
+
+You've now read both piles. Where do they disagree? What's loud in the interviews but rare in the tickets, and what's all over the tickets that nobody brought up in the interviews?
