@@ -38,7 +38,7 @@ Rook sells subscription software, priced per active responder, to independent ma
 |---|---|---|---|
 | Engineering manager | Marcus Oyelaran | Site Aleph | Dispatch engineering; first stop when unsure |
 | Staff engineer | Wen Li | Berlin | How ranking works; built it, undocumented |
-| Support lead | Nadia Hoffmann | Berlin | Tickets, 4.2 theme split |
+| Support lead | Nadia Hoffmann | Berlin | Tickets, 4.2 theme split; Priya suggests a standing 15 minutes |
 | Product designer | Sofia Marino | Site Aleph | Console, phone app, September interviews |
 | Not on thread: Director of Product | Helen Achebe | Site Aleph | The user's director; roadmap, commitments |
 | Not on thread: Data Analyst | Ravi Menon | Singapore | Weekly acceptance numbers |
@@ -62,8 +62,8 @@ Proximity weight 0.45→0.60, acceptance 0.40→0.25, ping wait 90s→60s. Also 
 - **Tickets:** about 6 a week before, 20–32 after; of 107, quiet phone 28, gone before answer 13, filters 15. Aunt Dot and Kip (Vesper, Meteor Mite) filed none, so tickets understate this.
 - **Likely cause (my read, unconfirmed):** the 60s wait turned slow answers into misses (four: 50% first week; others: 16%). A miss costs −0.12, a take earns +0.08, and nothing recovers over time, so unpinged responders stay stuck. Unproven: the database has no scores or answer times, and the acceptance weight was cut, so the score alone may not explain the skipping.
 - **Next:** Wen for live scores of the four (also answers Marcus's open 14 Aug question on whether this was intended); Ravi to verify and report by responder; Nadia to reach Aunt Dot and Kip.
-- **Priya's positions:** seasonal, don't discuss reverting, filter tickets are noise. These are views from the person who made the call.
-- **Pending:** the regroup after the new PM's first week, no outcome recorded; a written description of how routing decides, which Priya left to the new PM.
+- **Priya's positions:** mostly seasonal; console and mobile are stable; filter tickets are noise; don't discuss reverting, because wide-area responders had asked for the proximity change for three quarters and a revert trades one angry group for another. These are views from the person who made the call.
+- **Pending:** the regroup after the new PM's first week, no outcome recorded; Priya left the new PM to document how routing decides.
 
 ### Roadmap (last reviewed 30 Jun; every owner still says Priya)
 | Item | Roadmap | Actual state |
