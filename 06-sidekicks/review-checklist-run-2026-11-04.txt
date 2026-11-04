@@ -1,0 +1,57 @@
+review-checklist - manual run
+Started: 2026-11-04 22:01 IST
+Sources: Rook wiki "Product briefs" (Bulk Callout, Handler Phone App,
+  Requisition Approval Chains, Routing Override Audit Log) and the student's
+  draft 05-super-speed/brief.md. 06-sidekicks/briefs/ does not exist, which
+  is not treated as a failure.
+
+Bulk Callout
+  owner named ................. NO - flagged
+  success measure ............. yes
+  scope stays bounded ......... yes
+  problem stated before fix ... yes
+  -> 1 flag: no owner named. It ends on "nobody's picked it up yet", and
+     flagging it for a future owner is not the same as naming one.
+
+Handler Phone App
+  owner named ................. yes (the product designer)
+  success measure ............. yes
+  scope stays bounded ......... yes
+  problem stated before fix ... NO - flagged
+  -> 1 flag: solution before problem. It opens "We should build a phone app
+     for handlers"; the actual problem (Aunt Dot hearing a buzz through a
+     ceiling) only appears in the second section.
+
+Requisition Approval Chains
+  owner named ................. yes (the Rook Supply team)
+  success measure ............. yes
+  scope stays bounded ......... NO - flagged
+  problem stated before fix ... yes
+  -> 1 flag: scope grows mid-document. It says "That's the whole ask", then
+     adds a routing-around rule, a cross-site dashboard, handler visibility
+     and a spreadsheet replacement.
+
+Routing Override Audit Log
+  owner named ................. yes (the engineering manager's team)
+  success measure ............. NO - flagged
+  scope stays bounded ......... yes
+  problem stated before fix ... yes
+  -> 1 flag: no success measure. It says what gets logged and where it shows
+     up, never how anyone would know it is working.
+
+Quiet responders: a comeback path (05-super-speed/brief.md)
+  owner named ................. NO - flagged
+  success measure ............. yes (targets are proposals; baseline is a gap)
+  scope stays bounded ......... yes
+  problem stated before fix ... yes
+  -> 1 flag: the owner line is "[GAP] none named". Names are only suggested
+     ("Confirm with Helen"), so nobody is actually named.
+
+5 briefs checked, 5 flagged, 1 flag each.
+
+What changed since last time
+  - The four wiki briefs get the same four flags as the 13 Oct run
+    (06-sidekicks/scheduled-run-output.txt).
+  - The new draft brief adds a fifth flag: no confirmed owner.
+  - Outside the four tests: brief.md still says the prototype is "not built",
+    but 05-super-speed/prototype.html now exists. Update it before submitting.
